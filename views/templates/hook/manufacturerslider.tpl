@@ -1,5 +1,5 @@
 {*
-* 2007-2014 PrestaShop
+* 2007-2018 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -18,7 +18,7 @@
 * needs please refer to http://www.prestashop.com for more information.
 *
 *  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2014 PrestaShop SA
+*  @copyright  2007-2018 PrestaShop SA
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
@@ -28,8 +28,8 @@
 	<div class="swiper-container">
 		<div class="swiper-wrapper">
 			{foreach from=$all_manufacturers item=manufacturer}
-				<a class="swiper-slide manufacturerslider__item" href="{$manufacturer['link']|escape:'html':'UTF-8'}}" title="{$manufacturer['name']|escape:'html':'UTF-8'}}">
-					<img class="manufacturerslider__img" src="{if is_string($manufacturer.image)}{$img_manu_dir|escape:'html':'UTF-8'}}{$manufacturer['image']|escape:'html':'UTF-8'}}.jpg{else}{$img_manu_dir|escape:'html':'UTF-8'}}{$manufacturer['id_manufacturer']|escape:'html':'UTF-8'}}-medium_default.jpg{/if}" alt="{$manufacturer['name']|escape:'html':'UTF-8'}}"/>
+				<a class="swiper-slide manufacturerslider__item" href="{$manufacturer['link']|escape:'html':'UTF-8'}" title="{$manufacturer['name']|escape:'html':'UTF-8'}">
+					<img class="manufacturerslider__img" src="{if is_string($manufacturer.image)}{$img_manu_dir|escape:'html':'UTF-8'}{$manufacturer['image']|escape:'html':'UTF-8'}.jpg{else}{$img_manu_dir|escape:'html':'UTF-8'}{$manufacturer['id_manufacturer']|escape:'html':'UTF-8'}-medium_default.jpg{/if}" alt="{$manufacturer['name']|escape:'html':'UTF-8'}"/>
 				</a>
 			{/foreach}
 		</div><!-- /.swiper-wrapper -->
