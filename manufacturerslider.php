@@ -1,6 +1,7 @@
 <?php
-/*
-* 2007-2017 PrestaShop
+
+/**
+* 2007-2014 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -19,11 +20,10 @@
 * needs please refer to http://www.prestashop.com for more information.
 *
 *  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2017 PrestaShop SA
+*  @copyright  2007-2014 PrestaShop SA
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
-*/
-
+**/
 if (!defined('_PS_VERSION_')) {
 	exit;
 }
@@ -73,15 +73,24 @@ class ManufacturerSlider extends Module
 
 	public function hookdisplayHome($params)
 	{	
-		$id_lang=(int)$this->context->language->id;
 		$result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
 			SELECT m.id_manufacturer, m.name
 			FROM `'._DB_PREFIX_.'manufacturer` m
 		');
 
-		foreach ($result as &$row)
-		{
-			$row['id_image'] = Tools::file_exists_cache(_PS_MANU_IMG_DIR_.$row['id_manufacturer'].'.jpg') ? (int)$row['id_manufacturer'] : Language::getIsoById($id_lang).'-default-medium_default';
+		if (!empty($result)) {
+			foreach ($result as &$brand)
+			{
+				$brand['image'] = $this->context->language->iso_code . '-default';
+				$brand['link'] = $this->context->link->getManufacturerLink($brand['id_manufacturer']);
+				$fileExist = file_exists(
+					_PS_MANU_IMG_DIR_ . $brand['id_manufacturer'] . '-' .
+					ImageType::getFormatedName('medium') . '.jpg'
+				);
+				if ($fileExist) {
+					$brand['image'] = $brand['id_manufacturer'];
+				}
+			}
 		}
 
 		$this->smarty->assign('all_manufacturers', $result);
@@ -91,9 +100,9 @@ class ManufacturerSlider extends Module
 	
 	public function hookHeader()
 	{
-		$this->context->controller->addCSS(($this->_path).'css/swiper.min.css', 'all');
-		$this->context->controller->addCSS(($this->_path).'css/manufacturerslider.css', 'all');
-		$this->context->controller->addJS(($this->_path).'js/swiper.min.js', 'all');
-		$this->context->controller->addJS(($this->_path).'js/manufacturerslider.js', 'all');
+		$this->context->controller->addCSS(($this->_path).'views/css/swiper.min.css', 'all');
+		$this->context->controller->addCSS(($this->_path).'views/css/manufacturerslider.css', 'all');
+		$this->context->controller->addJS(($this->_path).'views/js/swiper.min.js', 'all');
+		$this->context->controller->addJS(($this->_path).'views/js/manufacturerslider.js', 'all');
 	}
 }
