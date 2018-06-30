@@ -39,6 +39,7 @@ class ManufacturerSlider extends Module
         $this->need_instance = 0;
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->bootstrap = true;
+		$this->module_key = 'ac04b3bb673c6f7184cef93d1a32874a';
 
         parent::__construct();
 
