@@ -39,7 +39,7 @@ class ManufacturerSlider extends Module
         $this->need_instance = 0;
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->bootstrap = true;
-		$this->module_key = 'ac04b3bb673c6f7184cef93d1a32874a';
+        $this->module_key = 'ac04b3bb673c6f7184cef93d1a32874a';
 
         parent::__construct();
 
@@ -80,15 +80,19 @@ class ManufacturerSlider extends Module
 		');
 
         if (!empty($result)) {
-            foreach ($result as &$brand) {
-                $brand['image'] = $this->context->language->iso_code . '-default';
-                $brand['link'] = $this->context->link->getManufacturerLink($brand['id_manufacturer']);
+            foreach ($result as &$manufacturer) {
+                $manufacturer['image'] = $this->context->language->iso_code . '-default';
+                $manufacturer['link'] = $this->context->link->getManufacturerLink($manufacturer['id_manufacturer']);
                 $fileExist = file_exists(
-                    _PS_MANU_IMG_DIR_ . $brand['id_manufacturer'] . '-' .
+                    _PS_MANU_IMG_DIR_ . $manufacturer['id_manufacturer'] . '-' .
                     ImageType::getFormatedName('medium') . '.jpg'
                 );
                 if ($fileExist) {
-                    $brand['image'] = $brand['id_manufacturer'];
+                    $manufacturer['imagesrc'] = _THEME_MANU_DIR_ . $manufacturer['id_manufacturer']
+                    . '-' . ImageType::getFormatedName('medium') . '.jpg';
+                } else {
+                    $manufacturer['imagesrc'] = _THEME_MANU_DIR_ . $manufacturer['image']
+                    . '-' . ImageType::getFormatedName('medium') . '.jpg';
                 }
             }
         }
