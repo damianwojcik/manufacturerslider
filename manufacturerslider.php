@@ -30,7 +30,6 @@ if (!defined('_PS_VERSION_')) {
 
 class ManufacturerSlider extends Module
 {
-
     public function __construct()
     {
         $this->name = 'manufacturerslider';
@@ -98,7 +97,6 @@ class ManufacturerSlider extends Module
 
             $this->_clearCache('*');
             $this->_html .= $this->displayConfirmation($this->l('Settings updated successfully.'));
-
         }
         return $this->_html . $this->renderForm();
     }
