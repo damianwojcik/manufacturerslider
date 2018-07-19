@@ -24,9 +24,16 @@
 */
 
 $(document).ready(function () {
+	var sliderElement = document.querySelector('.manufacturerslider');
+	var sliderItems = sliderElement.dataset.items || 3;
+	var sliderSpeed = sliderElement.dataset.speed || 1500;
+	var sliderLoop = sliderElement.dataset.loop || true;
     var manufacturerSlider = new Swiper('.manufacturerslider .swiper-container', {
-		slidesPerView: 6,
-		loop: true,
+		slidesPerView: sliderItems,
+		autoplay: {
+			delay: sliderSpeed
+		},
+		loop: sliderLoop,
 		navigation: {
 			nextEl: '.manufacturerslider .swiper-button-next',
 			prevEl: '.manufacturerslider .swiper-button-prev',

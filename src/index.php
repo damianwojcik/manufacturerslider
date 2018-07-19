@@ -1,5 +1,6 @@
-{*
-* 2007-2018 PrestaShop
+<?php
+/*
+* 2007-2013 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -18,22 +19,17 @@
 * needs please refer to http://www.prestashop.com for more information.
 *
 *  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2018 PrestaShop SA
+*  @copyright  2007-2013 PrestaShop SA
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
-*}
-
-<div class="clearfix"></div>
-<div class="manufacturerslider" data-items="{$manuslider_items}" data-speed="{$manuslider_speed}" data-loop="{$manuslider_loop}">
-	<div class="swiper-container">
-		<div class="swiper-wrapper">
-			{foreach from=$all_manufacturers item=manufacturer}
-				<a class="swiper-slide manufacturerslider__item" href="{$manufacturer['link']|escape:'html':'UTF-8'}" title="{$manufacturer['name']|escape:'html':'UTF-8'}">
-					<img class="manufacturerslider__img" src="{$manufacturer['imagesrc']|escape:'html':'UTF-8'}" alt="{$manufacturer['name']|escape:'html':'UTF-8'}"/>
-				</a>
-			{/foreach}
-		</div><!-- /.swiper-wrapper -->
-	</div><!-- /.swiper-container -->
-	<div class="swiper-button-next"></div>
-	<div class="swiper-button-prev"></div>
-</div><!-- /.manufacturerslider -->
+*/
+				    	
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+						
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+						
+header("Location: ../");
+exit;

@@ -4,6 +4,10 @@ img {
     border-style: none;
 }
 
+[role="button"] {
+    outline: none;
+}
+
 .swiper-container {
     width: 100%;
     height: 100%;
