@@ -4,7 +4,7 @@
 ## Features
 - Display manufacturers on homepage in slider
 - Slider is touch-ready, responsive and mobile-friendly
-- Lightweight (_~200kb_)
+- Lightweight (_~50kb_)
 - Fast and fully optimized
 - SEO friendly
 - Customizable configuration:
