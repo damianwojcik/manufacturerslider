@@ -28,6 +28,10 @@ $(document).ready(function () {
 	var sliderItems = sliderElement.dataset.items || 3;
 	var sliderSpeed = sliderElement.dataset.speed || 1500;
 	var sliderLoop = sliderElement.dataset.loop || true;
+	var sliderItems1170 = sliderElement.dataset.items1170 || 3;
+	var sliderItems992 = sliderElement.dataset.items992 || 3;
+	var sliderItems600 = sliderElement.dataset.items600 || 2;
+	var sliderItems460 = sliderElement.dataset.items460 || 1;
     var manufacturerSlider = new Swiper('.manufacturerslider .swiper-container', {
 		slidesPerView: sliderItems,
 		autoplay: {
@@ -42,16 +46,16 @@ $(document).ready(function () {
 		// Responsive breakpoints
 		breakpoints: {
 			1170: {
-				slidesPerView: 5
+				slidesPerView: sliderItems1170
 			},
 			992: {
-				slidesPerView: 4
+				slidesPerView: sliderItems992
 			},
 			600: {
-				slidesPerView: 3
+				slidesPerView: sliderItems600
 			},
 			460: {
-				slidesPerView: 2
+				slidesPerView: sliderItems460
 			}
 		}
 	});

@@ -28,17 +28,14 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-require __DIR__ . '/vendor/autoload.php';
-
-class ManufacturerSlider extends Module implements PrestaHomeConfiguratorInterface
+class ManufacturerSlider extends Module
 {
-    use PrestaHomeHelpers, PrestaHomeConfiguratorBase;
 
     public function __construct()
     {
         $this->name = 'manufacturerslider';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.0';
+        $this->version = '1.1.0';
         $this->author = 'damianwojcik.it';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
@@ -83,7 +80,6 @@ class ManufacturerSlider extends Module implements PrestaHomeConfiguratorInterfa
     public function uninstall()
     {
         $this->renderConfigurationForm();
-        $this->deleteConfigs();
 
         if (!parent::uninstall()) {
             return false;
@@ -109,7 +105,7 @@ class ManufacturerSlider extends Module implements PrestaHomeConfiguratorInterfa
 
     public function renderConfigurationForm()
     {
-        if ($this->fields_form) {
+        if (property_exists($this, 'fields_form')) {
             return;
         }
 
@@ -123,12 +119,19 @@ class ManufacturerSlider extends Module implements PrestaHomeConfiguratorInterfa
                 'input' => array(
 
                     array(
+                        'name' => 'separator',
+                        'type' => 'html',
+                        'html_content' => '<h2>'.$this->l('Global Settings').'</h2>',
+                        'ignore' => true
+                    ),
+
+                    array(
                         'type'  => 'text',
                         'lang'  => false,
                         'label' => $this->l('Slides:'),
                         'name'  => $this->options_prefix.'ITEMS',
                         'default' => '3',
-                        'desc' => $this->l('Number of displayed slides'),
+                        'desc' => $this->l('Number of displayed slides (default or more than 1170px wide)'),
                         'validate' => 'isUnsignedInt',
                     ),
         
@@ -159,6 +162,53 @@ class ManufacturerSlider extends Module implements PrestaHomeConfiguratorInterfa
                             )
                         ),
                         'default' => '1'
+                    ),
+
+                    array(
+                        'name' => 'separator',
+                        'type' => 'html',
+                        'html_content' => '<h2>'.$this->l('Responsive').'</h2>',
+                        'ignore' => true
+                    ),
+
+                    array(
+                        'type'  => 'text',
+                        'lang'  => false,
+                        'label' => $this->l('Laptops - items:'),
+                        'name'  => $this->options_prefix.'ITEMS_1170',
+                        'default' => '3',
+                        'desc' => $this->l('Number of displayed slides if screen width is less than 1170px'),
+                        'validate' => 'isUnsignedInt',
+                    ),
+
+                    array(
+                        'type'  => 'text',
+                        'lang'  => false,
+                        'label' => $this->l('Tablets - items:'),
+                        'name'  => $this->options_prefix.'ITEMS_992',
+                        'default' => '3',
+                        'desc' => $this->l('Number of displayed slides if screen width is less than 992px'),
+                        'validate' => 'isUnsignedInt',
+                    ),
+
+                    array(
+                        'type'  => 'text',
+                        'lang'  => false,
+                        'label' => $this->l('Small Tablets - items:'),
+                        'name'  => $this->options_prefix.'ITEMS_600',
+                        'default' => '2',
+                        'desc' => $this->l('Number of displayed slides if screen width is less than 600px'),
+                        'validate' => 'isUnsignedInt',
+                    ),
+
+                    array(
+                        'type'  => 'text',
+                        'lang'  => false,
+                        'label' => $this->l('Phones - items:'),
+                        'name'  => $this->options_prefix.'ITEMS_460',
+                        'default' => '1',
+                        'desc' => $this->l('Number of displayed slides if screen width is less than 460px'),
+                        'validate' => 'isUnsignedInt',
                     ),
         
                     array(
@@ -215,7 +265,10 @@ class ManufacturerSlider extends Module implements PrestaHomeConfiguratorInterfa
         $this->context->smarty->assign(array(
             'manuslider_items' => Configuration::get($this->options_prefix.'ITEMS'),
             'manuslider_speed'  => Configuration::get($this->options_prefix.'SPEED'),
-            'manuslider_loop'  => Configuration::get($this->options_prefix.'LOOP')
+            'manuslider_items_1170'  => Configuration::get($this->options_prefix.'ITEMS_1170'),
+            'manuslider_items_992'  => Configuration::get($this->options_prefix.'ITEMS_992'),
+            'manuslider_items_600'  => Configuration::get($this->options_prefix.'ITEMS_600'),
+            'manuslider_items_460'  => Configuration::get($this->options_prefix.'ITEMS_460')
         ));
 
         return $this->display(__FILE__, 'manufacturerslider.tpl');
@@ -227,5 +280,122 @@ class ManufacturerSlider extends Module implements PrestaHomeConfiguratorInterfa
         $this->context->controller->addCSS(($this->_path).'views/css/manufacturerslider.css', 'all');
         $this->context->controller->addJS(($this->_path).'views/js/swiper.min.js', 'all');
         $this->context->controller->addJS(($this->_path).'views/js/manufacturerslider.js', 'all');
+    }
+
+    public function renderForm()
+    {
+        $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
+        $this->renderConfigurationForm();
+
+        $helper = new HelperForm();
+        $helper->module = $this;
+        $helper->name_controller = $this->name;
+        $helper->identifier = $this->identifier;
+        $helper->token = Tools::getAdminTokenLite('AdminModules');
+        foreach (Language::getLanguages(false) as $lang) {
+            $helper->languages[] = array(
+                'id_lang' => $lang['id_lang'],
+                'iso_code' => $lang['iso_code'],
+                'name' => $lang['name'],
+                'is_default' => ($default_lang == $lang['id_lang'] ? 1 : 0)
+            );
+        }
+
+        $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
+        $helper->default_form_language = $default_lang;
+        $helper->allow_employee_form_lang = $default_lang;
+        $helper->toolbar_scroll = true;
+        $helper->title = $this->displayName;
+        $helper->submit_action = 'save'.$this->name;
+        $helper->toolbar_btn =  array(
+            'save' =>
+            array(
+                'desc' => $this->l('Save'),
+                'href' => AdminController::$currentIndex.'&configure='.$this->name.'&save'.$this->name.'&token='.Tools::getAdminTokenLite('AdminModules'),
+            )
+        );
+        $helper->tpl_vars = array(
+            'fields_value' => $this->getConfigFieldsValues(),
+            'languages' => $this->context->controller->getLanguages(),
+            'id_language' => $this->context->language->id
+        );
+
+        return $helper->generateForm($this->fields_form);
+    }
+
+    public function getConfigFieldsValues()
+    {
+        $id_shop = Shop::getContextShopID(true);
+        $id_shop_group = Shop::getContextShopGroupID(true);
+
+        $fields_values = array();
+        foreach ($this->fields_form as $f) {
+            foreach ($f['form']['input'] as $input) {
+                if (isset($input['ignore']) && $input['ignore'] == true) {
+                    continue;
+                }
+
+                if (isset($input['lang']) && $input['lang'] == true) {
+                    foreach (Language::getLanguages(false) as $lang) {
+                        $values = Tools::getValue($input['name'].'_'.$lang['id_lang'], (Configuration::hasKey($input['name'], $lang['id_lang']) ? Configuration::get($input['name'], $lang['id_lang'], (int)$id_shop_group, (int)$id_shop) : $input['default']));
+                        $fields_values[$input['name']][$lang['id_lang']] = $values;
+                    }
+                } else {
+                    if ($input['type'] == 'checkbox' && isset($input['values'])) {
+                        $input['name'] = str_replace(array('[]'), array(''), $input['name']);
+
+                        $values = (Configuration::hasKey($input['name'], null, (int)$id_shop_group, (int)$id_shop) ? Tools::jsonDecode(Configuration::get($input['name']), true) : $input['default']);
+
+                        if (is_array($values)) {
+                            foreach ($input['values']['query'] as $id_cms => $val) {
+                                if (in_array($id_cms, $values)) {
+                                    $fields_values[$input['name'].'[]_'.$id_cms] = $id_cms;
+                                }
+                            }
+                        }
+                    } else {
+                        $values = Tools::getValue($input['name'], (Configuration::hasKey($input['name'], null, (int)$id_shop_group, (int)$id_shop) ? Configuration::get($input['name']) : $input['default']));
+                        $fields_values[$input['name']] = $values;
+                    }
+                }
+            }
+        }
+
+        return $fields_values;
+    }
+
+    public function batchUpdateConfigs()
+    {
+        foreach ($this->fields_form as $f) {
+            foreach ($f['form']['input'] as $input) {
+                $input['name'] = str_replace(array('[]'), array(''), $input['name']);
+
+                if (isset($input['ignore']) && $input['ignore'] == true) {
+                    continue;
+                }
+
+                if (isset($input['lang']) && $input['lang'] == true) {
+                    $data = array();
+                    foreach (Language::getLanguages(false) as $lang) {
+                        $val = Tools::getValue($input['name'].'_'.$lang['id_lang'], $input['default']);
+                        $data[$lang['id_lang']] = $val;
+                    }
+
+                    if (isset($input['callback']) && method_exists($this, $input['callback'])) {
+                        $data[$lang['id_lang']] = $this->{$input['callback']}($data[$lang['id_lang']]);
+                    }
+
+                    Configuration::updateValue(trim($input['name']), $data, true);
+                } else {
+                    $val = Tools::getValue($input['name'], $input['default']);
+                    if (isset($input['callback']) && method_exists($this, $input['callback'])) {
+                        $val = $this->{$input['callback']}($val);
+                    }
+                    Configuration::updateValue($input['name'], $val, true);
+                }
+            }
+        }
+
+        return true;
     }
 }

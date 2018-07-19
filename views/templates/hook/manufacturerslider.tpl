@@ -24,7 +24,15 @@
 *}
 
 <div class="clearfix"></div>
-<div class="manufacturerslider" data-items="{$manuslider_items}" data-speed="{$manuslider_speed}" data-loop="{$manuslider_loop}">
+<div class="manufacturerslider"
+data-items="{$manuslider_items|escape:'html':'UTF-8'}"
+data-speed="{$manuslider_speed|escape:'html':'UTF-8'}"
+data-loop="{$manuslider_loop|escape:'html':'UTF-8'}"
+data-items1170="{$manuslider_items_1170|escape:'html':'UTF-8'}"
+data-items992="{$manuslider_items_992|escape:'html':'UTF-8'}"
+data-items600="{$manuslider_items_600|escape:'html':'UTF-8'}"
+data-items460="{$manuslider_items_460|escape:'html':'UTF-8'}"
+>
 	<div class="swiper-container">
 		<div class="swiper-wrapper">
 			{foreach from=$all_manufacturers item=manufacturer}
